@@ -1800,6 +1800,11 @@ extension SyncSetupService {
                 exit 1
             fi
 
+            # On macOS the official rclone build provides the macFUSE mount subcommand.
+            if [[ "$SYNC_MODE" == "mount" && "$MOUNT_BACKEND" == "macfuse" && -x "$HOME/.local/opt/rclone-official/rclone" ]]; then
+                RCLONE_BIN="$HOME/.local/opt/rclone-official/rclone"
+            fi
+
             # Helper: check if a remote has no_check_certificate set in rclone config. Reads
             # `rclone config dump` (not the file), so it also works on an encrypted rclone.conf.
             check_no_cert() {
@@ -2713,6 +2718,25 @@ extension SyncSetupService {
                 while IFS= read -r -d '' arg; do
                     ADDITIONAL_ARGS+=("$arg")
                 done < <(split_additional_flags "$ADDITIONAL_FLAGS")
+                # A profile can keep options for both backends when switching mounts.
+                if [[ "$SYNC_MODE" == "mount" ]]; then
+                    FILTERED_ARGS=()
+                    i=0
+                    while (( i < ${#ADDITIONAL_ARGS[@]} )); do
+                        arg="${ADDITIONAL_ARGS[$i]}"
+                        next="${ADDITIONAL_ARGS[$((i + 1))]:-}"
+                        i=$((i + 1))
+                        if [[ "$MOUNT_BACKEND" == "macfuse" ]]; then
+                            if [[ "$arg" == "--addr" ]]; then i=$((i + 1)); continue; fi
+                            if [[ "$arg" == --addr=* ]]; then continue; fi
+                        else
+                            if [[ ( "$arg" == "-o" || "$arg" == "--option" ) && "$next" == volicon=* ]]; then i=$((i + 1)); continue; fi
+                            if [[ "$arg" == -o*volicon=* || "$arg" == --option=volicon=* ]]; then continue; fi
+                        fi
+                        FILTERED_ARGS+=("$arg")
+                    done
+                    ADDITIONAL_ARGS=("${FILTERED_ARGS[@]}")
+                fi
                 RCLONE_CMD+=("${ADDITIONAL_ARGS[@]}")
             fi
 
@@ -2979,6 +3003,13 @@ extension SyncSetupService {
         let configPath = profile.configPath
         let logDir = (profile.logPath as NSString).deletingLastPathComponent
         let launchdLogPath = logDir + "/synctray-launchd-\(profile.shortId).log"
+        // Keep the selected connection when launchd starts the mount outside the app.
+        let configEnvironment = ProcessInfo.processInfo.environment["RCLONE_CONFIG"].map { path in
+            let escaped = path.replacingOccurrences(of: "&", with: "&amp;")
+                .replacingOccurrences(of: "<", with: "&lt;").replacingOccurrences(of: ">", with: "&gt;")
+            return "<key>RCLONE_CONFIG</key><string>\(escaped)</string>"
+        } ?? ""
+        let associatedApp = Bundle.main.bundleIdentifier.map { "<key>AssociatedBundleIdentifiers</key><array><string>\($0)</string></array>" } ?? ""
 
         if profile.isMountMode {
             // Mount mode: use KeepAlive to maintain the daemon — but only when the
@@ -3014,8 +3045,10 @@ extension SyncSetupService {
                     <key>StandardErrorPath</key>
                     <string>\(launchdLogPath)</string>
 
+                    \(associatedApp)
                     <key>EnvironmentVariables</key>
                     <dict>
+                        \(configEnvironment)
                         <key>PATH</key>
                         <string>/opt/homebrew/bin:/usr/local/bin:/run/current-system/sw/bin:/etc/profiles/per-user/\(NSUserName())/bin:\(NSHomeDirectory())/.nix-profile/bin:/usr/bin:/bin</string>
                     </dict>
@@ -3055,8 +3088,10 @@ extension SyncSetupService {
                     <key>StandardErrorPath</key>
                     <string>\(launchdLogPath)</string>
 
+                    \(associatedApp)
                     <key>EnvironmentVariables</key>
                     <dict>
+                        \(configEnvironment)
                         <key>PATH</key>
                         <string>/opt/homebrew/bin:/usr/local/bin:/run/current-system/sw/bin:/etc/profiles/per-user/\(NSUserName())/bin:\(NSHomeDirectory())/.nix-profile/bin:/usr/bin:/bin</string>
                     </dict>

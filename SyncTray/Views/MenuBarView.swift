@@ -128,7 +128,15 @@ struct MenuBarView: View {
 
                     // Action buttons (order: settings, mute, folder, pause/play)
                     HStack(spacing: 4) {
-                        // Settings button - opens profile settings
+                        if syncManager.profileStore.profiles.contains(where: { $0.isMountMode }) {
+                Button {
+                    openSettingsWindow()
+                    DispatchQueue.main.async { NotificationCenter.default.post(name: .openDriveWorkspace, object: nil) }
+                } label: { Label("Browse Drive", systemImage: "externaldrive.badge.icloud") }
+                    .buttonStyle(.plain).padding(.horizontal, 8).padding(.vertical, 6)
+            }
+
+            // Settings button - opens profile settings
                         Button(action: { openSettingsForProfile(profile.id) }) {
                             Image(systemName: "gearshape")
                                 .font(.system(size: 10))

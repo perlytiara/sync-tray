@@ -11,7 +11,7 @@ final class RcloneConfigService {
 
     /// Path to rclone configuration file
     private var configPath: String {
-        "\(NSHomeDirectory())/.config/rclone/rclone.conf"
+        ProcessInfo.processInfo.environment["RCLONE_CONFIG"] ?? "\(NSHomeDirectory())/.config/rclone/rclone.conf"
     }
 
     // MARK: - Encrypted config

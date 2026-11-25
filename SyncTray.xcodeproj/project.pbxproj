@@ -25,6 +25,9 @@
 		A11111110000000000000009 /* StatusHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000009 /* StatusHeaderView.swift */; };
 		A1111111000000000000000A /* RecentChangesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000000A /* RecentChangesView.swift */; };
 		A1111111000000000000000E /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000000E /* Settings.swift */; };
+		DD001450BD5F4E02A2D16FFA /* DriveWorkspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D336CD89E04A608194A9FD /* DriveWorkspace.swift */; };
+		8F4EE8CF2EEA408E85DE37AF /* DriveActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A120D85FE8C41B7BEB5E18D /* DriveActivityView.swift */; };
+		80E7C200D9954F2099256447 /* ArchiveWorkspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78EBF66B709340F29B007007 /* ArchiveWorkspace.swift */; };
 		A1111111000000000000000F /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000000F /* SettingsView.swift */; };
 		A11111110000000000000010 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000010 /* Assets.xcassets */; };
 		A11111110000000000000011 /* SyncSetupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000011 /* SyncSetupService.swift */; };
@@ -46,6 +49,10 @@
 		CD8DBB07353E3912253F60F6 /* settings.schema.json in Resources */ = {isa = PBXBuildFile; fileRef = 58F65D759543D11557E77A58 /* settings.schema.json */; };
 		D1AA48876BFD939152611C3A /* RemoteProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50EAC070BD6E49AA1131944 /* RemoteProvider.swift */; };
 		D347B9A6D156102131579DED /* SetupWizardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DF29F3BB633D9E3DD12136A /* SetupWizardView.swift */; };
+		9F74ADE0D1DD471187849711 /* DriveWorkspaceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA8D058E3F648F4AFB705DD /* DriveWorkspaceService.swift */; };
+		1360A3D1A27E48EF89251767 /* ArchiveDriveCheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1574790040714FEB98CEFAEC /* ArchiveDriveCheck.swift */; };
+		3B8617DB15C940569D62940F /* ArchiveMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93DE500E6D1044F3A1F0C50E /* ArchiveMonitor.swift */; };
+		4B1123A73F084C87BB9E54A2 /* DriveWorkspaceSelfTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B22F5B541D440738AB57F2B /* DriveWorkspaceSelfTest.swift */; };
 		E1A0B1C2D3E4F56789AB0001 /* VFSCacheService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0B1C2D3E4F56789AB0002 /* VFSCacheService.swift */; };
 		E1A0B1C2D3E4F56789AB0003 /* OfflineFilesSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0B1C2D3E4F56789AB0004 /* OfflineFilesSection.swift */; };
 		E1A0B1C2D3E4F56789AB0005 /* TelemetryOptInBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A0B1C2D3E4F56789AB0006 /* TelemetryOptInBanner.swift */; };
@@ -123,6 +130,9 @@
 		A1000000000000000000000C /* SyncTray.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SyncTray.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1000000000000000000000D /* SyncTray.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SyncTray.entitlements; sourceTree = "<group>"; };
 		A1000000000000000000000E /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		64D336CD89E04A608194A9FD /* DriveWorkspace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriveWorkspace.swift; sourceTree = "<group>"; };
+		1A120D85FE8C41B7BEB5E18D /* DriveActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriveActivityView.swift; sourceTree = "<group>"; };
+		78EBF66B709340F29B007007 /* ArchiveWorkspace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveWorkspace.swift; sourceTree = "<group>"; };
 		A1000000000000000000000F /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		A10000000000000000000010 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A10000000000000000000011 /* SyncSetupService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncSetupService.swift; sourceTree = "<group>"; };
@@ -144,6 +154,10 @@
 		A1B2C3D4E5F60718293A4B5D /* RcloneConfigPassword.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RcloneConfigPassword.swift; sourceTree = "<group>"; };
 		D767944E8289869D576524AC /* RcloneLocator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RcloneLocator.swift; sourceTree = "<group>"; };
 		DFEE308C253708BD60348055 /* CacheMigrationProgress.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CacheMigrationProgress.swift; sourceTree = "<group>"; };
+		DCA8D058E3F648F4AFB705DD /* DriveWorkspaceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriveWorkspaceService.swift; sourceTree = "<group>"; };
+		1574790040714FEB98CEFAEC /* ArchiveDriveCheck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveDriveCheck.swift; sourceTree = "<group>"; };
+		93DE500E6D1044F3A1F0C50E /* ArchiveMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveMonitor.swift; sourceTree = "<group>"; };
+		2B22F5B541D440738AB57F2B /* DriveWorkspaceSelfTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriveWorkspaceSelfTest.swift; sourceTree = "<group>"; };
 		E1A0B1C2D3E4F56789AB0002 /* VFSCacheService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VFSCacheService.swift; sourceTree = "<group>"; };
 		E1A0B1C2D3E4F56789AB0004 /* OfflineFilesSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineFilesSection.swift; sourceTree = "<group>"; };
 		E1A0B1C2D3E4F56789AB0006 /* TelemetryOptInBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelemetryOptInBanner.swift; sourceTree = "<group>"; };
@@ -264,6 +278,10 @@
 				A10000000000000000000011 /* SyncSetupService.swift */,
 				A10000000000000000000013 /* ProfileStore.swift */,
 				C0DC6141FBB853681643F593 /* RcloneConfigService.swift */,
+				DCA8D058E3F648F4AFB705DD /* DriveWorkspaceService.swift */,
+				1574790040714FEB98CEFAEC /* ArchiveDriveCheck.swift */,
+				93DE500E6D1044F3A1F0C50E /* ArchiveMonitor.swift */,
+				2B22F5B541D440738AB57F2B /* DriveWorkspaceSelfTest.swift */,
 				E1A0B1C2D3E4F56789AB0002 /* VFSCacheService.swift */,
 				F2B3C4D5E6F7089012AB0002 /* MigrationRunner.swift */,
 				OT00000000000000000000A1 /* TelemetryService.swift */,
@@ -289,6 +307,9 @@
 				A10000000000000000000008 /* MenuBarView.swift */,
 				A10000000000000000000009 /* StatusHeaderView.swift */,
 				A1000000000000000000000A /* RecentChangesView.swift */,
+				64D336CD89E04A608194A9FD /* DriveWorkspace.swift */,
+				1A120D85FE8C41B7BEB5E18D /* DriveActivityView.swift */,
+				78EBF66B709340F29B007007 /* ArchiveWorkspace.swift */,
 				A1000000000000000000000F /* SettingsView.swift */,
 				A10000000000000000000019 /* AppSettingsView.swift */,
 				A10000000000000000000014 /* ProfileListView.swift */,
@@ -498,6 +519,9 @@
 				A11111110000000000000008 /* MenuBarView.swift in Sources */,
 				A11111110000000000000009 /* StatusHeaderView.swift in Sources */,
 				A1111111000000000000000A /* RecentChangesView.swift in Sources */,
+				DD001450BD5F4E02A2D16FFA /* DriveWorkspace.swift in Sources */,
+				8F4EE8CF2EEA408E85DE37AF /* DriveActivityView.swift in Sources */,
+				80E7C200D9954F2099256447 /* ArchiveWorkspace.swift in Sources */,
 				A1111111000000000000000F /* SettingsView.swift in Sources */,
 				A11111110000000000000019 /* AppSettingsView.swift in Sources */,
 				A11111110000000000000014 /* ProfileListView.swift in Sources */,
@@ -512,6 +536,10 @@
 				D347B9A6D156102131579DED /* SetupWizardView.swift in Sources */,
 				58578B4CF51E7600D4E39636 /* ProviderFieldsView.swift in Sources */,
 				AB12CD34EF56789012340001 /* AddRemoteSheet.swift in Sources */,
+				9F74ADE0D1DD471187849711 /* DriveWorkspaceService.swift in Sources */,
+				1360A3D1A27E48EF89251767 /* ArchiveDriveCheck.swift in Sources */,
+				3B8617DB15C940569D62940F /* ArchiveMonitor.swift in Sources */,
+				4B1123A73F084C87BB9E54A2 /* DriveWorkspaceSelfTest.swift in Sources */,
 				E1A0B1C2D3E4F56789AB0001 /* VFSCacheService.swift in Sources */,
 				E1A0B1C2D3E4F56789AB0003 /* OfflineFilesSection.swift in Sources */,
 				E1A0B1C2D3E4F56789AB0005 /* TelemetryOptInBanner.swift in Sources */,

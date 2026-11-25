@@ -55,6 +55,9 @@ struct TransferringFile: Codable, Identifiable, Equatable {
     let speedAvg: Double?
     let eta: Int?
 
+    var srcFs: String? = nil
+    var dstFs: String? = nil
+
     var id: String { name }
 
     /// The filename component of the path

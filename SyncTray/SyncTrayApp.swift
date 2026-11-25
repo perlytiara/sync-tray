@@ -18,26 +18,13 @@ struct SyncTrayApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     init() {
-        // Headless `synctray` CLI subcommands (doctor, test-remote, logs,
-        // listremotes, profiles) are dispatched and exited BEFORE anything
-        // else — never launches the SwiftUI app, never starts watchers/
-        // timers/telemetry. `dispatch` returns nil for `--self-test` and a
-        // normal (no-argument) launch, so both fall through unaffected.
-        if let exitCode = SyncTrayCLI.dispatch(arguments: CommandLine.arguments) {
-            exit(exitCode)
-        }
-
-        // `--self-test` runs the host self-test suite (schema/round-trip/
-        // migration/reconcile/self-write/isolated-login/CLI assertions) and
-        // exits immediately — never launches the SwiftUI app. Checked before
-        // any other init work so the self-test never touches real user data.
-        // ConfigSelfTest is #if DEBUG only (no XCTest target; see CLAUDE.md).
         #if DEBUG
-        if CommandLine.arguments.contains("--self-test") {
-            let exitCode = ConfigSelfTest.run()
-            exit(exitCode)
-        }
+        // Fixture suites exit before reading any installed connection or starting services.
+        if CommandLine.arguments.contains("--drive-workspace-self-test") { exit(DriveWorkspaceSelfTest.run()) }
+        if CommandLine.arguments.contains("--self-test") { exit(ConfigSelfTest.run()) }
         #endif
+        ArchiveMonitor.preserveMountConnection()
+        if let code = SyncTrayCLI.dispatch(arguments: CommandLine.arguments) { exit(code) }
 
         // Run any pending data migrations before loading profiles
         MigrationRunner.runPendingMigrations()
@@ -414,10 +401,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, UNUserNoti
         let hostingController = NSHostingController(rootView: settingsView)
 
         let window = NSWindow(contentViewController: hostingController)
-        window.title = "SyncTray Settings"
+        window.title = "SyncTray"
         window.styleMask = [.titled, .closable, .miniaturizable, .resizable]
-        window.setContentSize(NSSize(width: 700, height: 650))
-        window.minSize = NSSize(width: 600, height: 500)
+        window.setContentSize(NSSize(width: 1050, height: 730))
+        window.minSize = NSSize(width: 830, height: 540)
         window.center()
         // isReleasedWhenClosed = false keeps the NSWindow object alive after the user
         // closes it so we can re-show it via makeKeyAndOrderFront without recreating it.
@@ -524,5 +511,6 @@ extension Notification.Name {
     static let selectProfile = Notification.Name("selectProfile")
     /// Show the app-wide Settings page (e.g. from an error banner that needs a setting there).
     static let selectAppSettings = Notification.Name("selectAppSettings")
+    static let openDriveWorkspace = Notification.Name("openDriveWorkspace")
     static let openSettingsWindow = Notification.Name("openSettingsWindow")
 }

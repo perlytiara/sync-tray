@@ -21,26 +21,38 @@ struct ProfileListView: View {
 
             // Profile list
             List(selection: $selection) {
-                ForEach(profileStore.profiles) { profile in
-                    ProfileRow(
-                        profile: profile,
-                        state: syncManager.state(for: profile.id),
-                        isInstalled: SyncSetupService.shared.isInstalled(profile: profile),
-                        isPaused: syncManager.isPaused(for: profile.id),
-                        progress: syncManager.profileProgress[profile.id]
-                    )
-                    .tag(SidebarSelection.profile(profile.id))
-                    .contextMenu {
-                        Button(syncManager.isPaused(for: profile.id) ? "Resume Syncing" : "Pause Syncing") {
-                            syncManager.togglePause(for: profile.id)
-                        }
-                        Divider()
-                        Button("Delete", role: .destructive) {
-                            deleteProfile(profile)
-                        }
+                Section("Library") {
+                    ForEach(profileStore.profiles.filter(\.isMountMode)) { profile in
+                        Label(profile.name.isEmpty ? "My Drive" : profile.name, systemImage: "externaldrive.badge.icloud")
+                            .padding(.vertical, 5).tag(SidebarSelection.drive(profile.id))
+                    }
+                    if ArchiveMonitor.installed {
+                        Label("Project backups", systemImage: "archivebox")
+                            .padding(.vertical, 5).tag(SidebarSelection.archives)
                     }
                 }
-                .onDelete(perform: deleteProfiles)
+                Section("Connections") {
+                    ForEach(profileStore.profiles) { profile in
+                        ProfileRow(
+                            profile: profile,
+                            state: syncManager.state(for: profile.id),
+                            isInstalled: SyncSetupService.shared.isInstalled(profile: profile),
+                            isPaused: syncManager.isPaused(for: profile.id),
+                            progress: syncManager.profileProgress[profile.id]
+                        )
+                        .tag(SidebarSelection.profile(profile.id))
+                        .contextMenu {
+                            Button(syncManager.isPaused(for: profile.id) ? "Resume Syncing" : "Pause Syncing") {
+                                syncManager.togglePause(for: profile.id)
+                            }
+                            Divider()
+                            Button("Delete", role: .destructive) {
+                                deleteProfile(profile)
+                            }
+                        }
+                    }
+                    .onDelete(perform: deleteProfiles)
+                }
             }
             .listStyle(.sidebar)
 
