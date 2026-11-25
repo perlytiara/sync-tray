@@ -11,6 +11,7 @@ permissions:
 
 jobs:
   collect-stats:
+    if: github.repository == 'mthines/sync-tray'
     runs-on: ubuntu-latest
     steps:
       - name: Collect download statistics

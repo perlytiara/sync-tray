@@ -2,32 +2,38 @@
   <img src="docs/assets/synctray-logo.png" alt="SyncTray logo" height="160">
 </p>
 
-<h1 align="center">SyncTray</h1>
+<h1 align="center">SyncTray · Drive workspace</h1>
 
 <p align="center">
-  <strong>Google Drive-style sync for any storage — your NAS, S3, SFTP, Google Drive, and 70+ more.</strong><br>
-  A native macOS menu bar app for two-way sync, one-way backup, and on-demand streaming, built on <a href="https://rclone.org">rclone</a>.<br>
-  Set it up in the app, or hand the whole setup to your AI agent.
+  Browse a cloud drive on macOS, see individual transfers, and check which files are cached locally.
 </p>
 
 <p align="center">
-  <a href="https://github.com/mthines/sync-tray/releases/latest"><img src="https://img.shields.io/github/v/release/mthines/sync-tray?label=release" alt="Latest release"></a>
-  <a href="https://github.com/mthines/sync-tray/actions/workflows/ci.yml"><img src="https://github.com/mthines/sync-tray/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
+  <a href="https://github.com/perlytiara/sync-tray/actions/workflows/ci.yml"><img src="https://github.com/perlytiara/sync-tray/actions/workflows/ci.yml/badge.svg?branch=main" alt="Build and tests"></a>
   <img src="https://img.shields.io/badge/macOS-13%2B-blue" alt="macOS 13+">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="License: MIT"></a>
-  <a href="https://discord.gg/KBp8kb3EwP"><img src="https://img.shields.io/badge/chat-Discord-5865F2?logo=discord&logoColor=white" alt="Discord"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="MIT license"></a>
 </p>
+
+This public fork builds on the native SwiftUI app by [mthines and the SyncTray contributors](https://github.com/mthines/sync-tray) and uses rclone for storage and transfers. Connect your own Google Drive account or another rclone remote in a Stream profile.
+
+- **Files** opens one folder at a time in the mounted drive. Use breadcrumbs, search the current folder, open a file in its Mac app, or show the folder in Finder. Cache availability uses rclone’s recorded byte ranges.
+- **Activity** shows the files moving now, upload queue, and recent transfers for this mount session. Idle, cache-only, disconnected, and unavailable readings have their own states.
+- **Project backups** appears on Macs with the separate Project Archive Backup worker. It reads the current ledger, scheduler, and completed run, including skipped work and pending failures. **Verify on Drive** compares the recorded MD5 values with cloud metadata in the worker’s archive folder. Each result carries its date and applies to the same ledger. The worker and personal backup configuration are separate installations.
+
+## Build this fork
+
+Install Xcode and rclone, then build the app from this repository.
 
 ```bash
-brew install rclone
-brew install --cask mthines/synctray/synctray
+git clone https://github.com/perlytiara/sync-tray.git
+cd sync-tray
+xcodebuild -project SyncTray.xcodeproj -scheme SyncTray -configuration Release \
+  -destination 'platform=macOS' -derivedDataPath build -onlyUsePackageVersionsFromResolvedFile \
+  CODE_SIGNING_ALLOWED=NO build
+open build/Build/Products/Release/SyncTray.app
 ```
 
-<p align="center">
-  <img src="docs/assets/status-bar-idle.png" alt="SyncTray menu bar dropdown" height="420">
-  &nbsp;&nbsp;
-  <img src="docs/assets/profile-syncing-transfer-details.png" alt="A profile syncing, with live transfer progress" height="420">
-</p>
+For a first connection, open **Setup Wizard**, connect a remote, and choose **Stream (Mount)**. The drive appears under **Library** after setup. The default NFS backend works with Homebrew rclone. For macFUSE, use a FUSE-capable rclone build. Local signing for the optional Finder extension is documented in the [development guide](DEVELOPMENT.md).
 
 ## Why SyncTray
 
@@ -95,31 +101,9 @@ The menu bar shows which one is in use.
 
 Full walkthroughs for every feature are in the [user guide](docs/user-guide.md).
 
-## Install
+## Upstream releases
 
-You need **macOS 13 (Ventura) or later** and **[rclone](https://rclone.org/)**.
-SyncTray ships as a universal app for Apple silicon and Intel, signed with a Developer ID and notarized by Apple.
-
-**Homebrew (recommended)**
-
-```bash
-brew install rclone
-brew install --cask mthines/synctray/synctray
-```
-
-**Download** the latest `.zip` from [Releases](https://github.com/mthines/sync-tray/releases/latest), unzip it, and drag `SyncTray.app` to `/Applications`.
-
-**Build from source**
-
-```bash
-git clone https://github.com/mthines/sync-tray.git
-cd sync-tray
-xcodebuild -scheme SyncTray -configuration Release CODE_SIGNING_ALLOWED=NO build
-```
-
-An unsigned build runs, but the Finder extension only loads in a signed one — [DEVELOPMENT.md](DEVELOPMENT.md) covers local signing.
-
-SyncTray finds rclone from Homebrew, `/usr/local/bin`, `/usr/bin`, and nix installs without extra configuration.
+The upstream project distributes notarized builds and its Homebrew cask. The Drive workspace in this fork builds from the source above. [Upstream releases](https://github.com/mthines/sync-tray/releases)
 
 ## Quick start
 
@@ -171,7 +155,7 @@ The full list is in the app under **Privacy & Telemetry**.
 ## Community and support
 
 Questions, feedback, or a feature idea? Join the [SyncTray Discord](https://discord.gg/KBp8kb3EwP) — it's also linked from **Help & Feedback** in the menu bar.
-Found a bug? [Open an issue](https://github.com/mthines/sync-tray/issues).
+Report Drive workspace issues in [this fork’s tracker](https://github.com/perlytiara/sync-tray/issues).
 
 ## Contributing
 

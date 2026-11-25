@@ -18,6 +18,9 @@ struct SyncTrayApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     init() {
+        #if DEBUG
+        if CommandLine.arguments.contains("--drive-workspace-self-test") { exit(DriveWorkspaceSelfTest.run()) }
+        #endif
         // Headless `synctray` CLI subcommands (doctor, test-remote, logs,
         // listremotes, profiles) are dispatched and exited BEFORE anything
         // else — never launches the SwiftUI app, never starts watchers/
@@ -38,6 +41,8 @@ struct SyncTrayApp: App {
             exit(exitCode)
         }
         #endif
+
+        ArchiveMonitor.preserveMountConnection()
 
         // Run any pending data migrations before loading profiles
         MigrationRunner.runPendingMigrations()
@@ -414,10 +419,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, UNUserNoti
         let hostingController = NSHostingController(rootView: settingsView)
 
         let window = NSWindow(contentViewController: hostingController)
-        window.title = "SyncTray Settings"
+        window.title = "SyncTray"
         window.styleMask = [.titled, .closable, .miniaturizable, .resizable]
-        window.setContentSize(NSSize(width: 700, height: 650))
-        window.minSize = NSSize(width: 600, height: 500)
+        window.setContentSize(NSSize(width: 1050, height: 730))
+        window.minSize = NSSize(width: 830, height: 540)
         window.center()
         // isReleasedWhenClosed = false keeps the NSWindow object alive after the user
         // closes it so we can re-show it via makeKeyAndOrderFront without recreating it.
@@ -524,5 +529,6 @@ extension Notification.Name {
     static let selectProfile = Notification.Name("selectProfile")
     /// Show the app-wide Settings page (e.g. from an error banner that needs a setting there).
     static let selectAppSettings = Notification.Name("selectAppSettings")
+    static let openDriveWorkspace = Notification.Name("openDriveWorkspace")
     static let openSettingsWindow = Notification.Name("openSettingsWindow")
 }

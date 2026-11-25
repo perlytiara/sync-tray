@@ -4,6 +4,8 @@ import UniformTypeIdentifiers
 /// Represents what's selected in the settings sidebar
 enum SidebarSelection: Hashable {
     case profile(UUID)
+    case drive(UUID)
+    case archives
     case appSettings
 }
 
@@ -34,6 +36,12 @@ struct SettingsView: View {
                 } else {
                     noSelectionPlaceholder
                 }
+            case .drive(let id):
+                if let profile = syncManager.profileStore.profile(for: id), profile.isMountMode {
+                    DriveWorkspace(profile: profile).id(id)
+                } else { noSelectionPlaceholder }
+            case .archives:
+                ArchiveWorkspace()
             case .appSettings:
                 AppSettingsView()
             case nil:
@@ -41,7 +49,7 @@ struct SettingsView: View {
             }
         }
         .toolbar(.hidden)
-        .frame(width: 700, height: 650)
+        .frame(minWidth: 830, idealWidth: 1050, minHeight: 540, idealHeight: 730)
         .onAppear {
             // Check if there's a pending profile selection from notification tap
             if let pendingId = AppDelegate.pendingProfileSelection {
@@ -49,10 +57,17 @@ struct SettingsView: View {
                 AppDelegate.pendingProfileSelection = nil
             } else if selection == nil {
                 // Select first profile if none selected
-                if let firstId = syncManager.profileStore.profiles.first?.id {
+                if let drive = syncManager.profileStore.profiles.first(where: { $0.isMountMode }) {
+                    selection = .drive(drive.id)
+                } else if ArchiveMonitor.installed {
+                    selection = .archives
+                } else if let firstId = syncManager.profileStore.profiles.first?.id {
                     selection = .profile(firstId)
                 }
             }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .openDriveWorkspace)) { _ in
+            if let drive = syncManager.profileStore.profiles.first(where: { $0.isMountMode }) { selection = .drive(drive.id) }
         }
         .onReceive(NotificationCenter.default.publisher(for: .selectAppSettings)) { _ in
             selection = .appSettings

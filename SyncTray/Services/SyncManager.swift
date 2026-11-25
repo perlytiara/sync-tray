@@ -4083,6 +4083,7 @@ final class SyncManager: ObservableObject {
     /// main actor; gated once-per-mount by `shouldWarmListingsOnMount`, so no supersede/cancel
     /// bookkeeping is needed (unlike the data warm).
     func startListingWarm(for profileId: UUID) {
+        guard ProcessInfo.processInfo.environment["SYNCTRAY_ON_DEMAND_ONLY"] != "1" else { return }
         guard let profile = profileStore.profiles.first(where: { $0.id == profileId }),
               profile.isMountMode, profile.rcPort > 0 else { return }
         // Anti-thrash cooldown: a mount that can't attach gets restarted by launchd and re-fires

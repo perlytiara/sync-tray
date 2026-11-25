@@ -269,6 +269,7 @@ jobs:
             exit 1
           fi
           "$APP" --self-test
+          "$APP" --drive-workspace-self-test
 
   # ===========================================================================
   # version — calculate the next version from conventional commits and create
@@ -279,7 +280,7 @@ jobs:
   version:
     needs: [detect-changes, test]
     if: |
-      always() &&
+      always() && github.repository == 'mthines/sync-tray' &&
       (needs.test.result == 'success' || needs.test.result == 'skipped') &&
       needs.detect-changes.outputs.should_release == 'true' &&
       !inputs.dry_run &&
