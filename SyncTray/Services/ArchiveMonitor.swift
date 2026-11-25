@@ -10,14 +10,18 @@ enum ArchiveMonitor {
     // Older installations select a separate rclone config for their Stream mount.
     // This is connection bootstrap only. The retired per-file queue never supplies status.
     static func preserveMountConnection() {
-        guard ProcessInfo.processInfo.environment["RCLONE_CONFIG"] == nil else { return }
         let config = base.deletingLastPathComponent().appendingPathComponent("Project Backup/config.json")
-        struct Connection: Decodable { let rclone_config: String }
-        guard let data = try? Data(contentsOf: config),
-              let connection = try? JSONDecoder().decode(Connection.self, from: data),
-              FileManager.default.isReadableFile(atPath: connection.rclone_config) else { return }
-        setenv("RCLONE_CONFIG", connection.rclone_config, 0)
+        guard let path = mountConfig(from: config, overriding: ProcessInfo.processInfo.environment["RCLONE_CONFIG"]) else { return }
+        setenv("RCLONE_CONFIG", path, 0)
         setenv("SYNCTRAY_ON_DEMAND_ONLY", "1", 0)
+    }
+
+    static func mountConfig(from config: URL, overriding current: String?) -> String? {
+        struct Connection: Decodable { let rclone_config: String }
+        guard current == nil, let data = try? Data(contentsOf: config),
+              let connection = try? JSONDecoder().decode(Connection.self, from: data),
+              FileManager.default.isReadableFile(atPath: connection.rclone_config) else { return nil }
+        return connection.rclone_config
     }
 
     struct Project: Identifiable {

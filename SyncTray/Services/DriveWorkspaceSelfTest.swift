@@ -66,6 +66,12 @@ enum DriveWorkspaceSelfTest {
             func save(_ file: String, _ object: Any) throws {
                 try JSONSerialization.data(withJSONObject: object).write(to: base.appendingPathComponent(file))
             }
+            let connection = base.appendingPathComponent("fixture.conf")
+            try write("fixture.conf", "")
+            let settings = base.appendingPathComponent("connection.json")
+            try save("connection.json", ["rclone_config": connection.path])
+            try check(ArchiveMonitor.mountConfig(from: settings, overriding: nil) == connection.path, "GUI and CLI discover the existing mount connection")
+            try check(ArchiveMonitor.mountConfig(from: settings, overriding: "explicit.conf") == nil, "explicit rclone connection wins")
             func state(failing: [String: Any]) throws {
                 try save("state.json", ["Studio/Design": archived, "_meta": ["failing": failing, "last_full_run": now.timeIntervalSince1970]])
             }
